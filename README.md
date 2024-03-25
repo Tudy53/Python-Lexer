@@ -2,28 +2,31 @@
  The project consists in the implementation of a lexer in python.
  Project
 The project consists in the implementation of a lexer in python.
-What is a lexer?
+
+# What is a lexer?
 A lexer is a program that divides a string of characters into substrings called lexemes, each of which is classified as a token, based on a specification.
-Care este input-ul unui lexer?
+
+# Which is the input of a Lexer?
 The lexer initially receives a specification of the form:
 TOKEN1 : REGEX1;
-
 TOKEN2 : REGEX2;
-
 TOKEN3 : REGEX3;
 
 ...
 where each TOKENi is a name given to a token, and REGEXi is a regex describing lexemes that can be classified as that token. You can think of this specification as a configuration file, which describes how the lexer will work on various text files.
 The actual input of a lexer is a text that will be divided into lexemes using regular expressions. In future courses you will learn more details about how lexers work and how they are implemented.
-Which is the output of a lexer?
+
+# Which is the output of a lexer?
+
 The lexer outputs a list of the form: [(lexema1, TOKEN_LEXEMA_1), (lexema2, TOKEN_LEXEMA_2), …], where TOKEN_LEXEMA_N is the name of the token associated with lexeme n, based on the specification.
-Stage 1
+
+# Stage 1
 Due to the difficulty of working directly with regexes to verify the belonging of a word in the language, real lexers go through several intermediate stages before starting the analysis of the text. These steps build a DFA based on the regex.
 Stage 1 of the project consists of converting NFA into DFA (using the Subset Construction Algorithm presented in the course)
 The theme will be implemented in Python, and the skeleton offers you a pattern for implementing the necessary functionalities.
 Structure
-Class DFA
-A DFA will be described by the following fields:
+# Class DFA
+ A DFA will be described by the following fields:
 S - the alphabet of the language, represented as a set of strings
 K - states of the automaton, represented as a set of __STATE__
 q0 - the initial state of the automaton
@@ -38,7 +41,7 @@ For example, if we have the next automata:
  
 Am putea aplica functia x → 'q' + str(x+2), care ar creea un DFA cu urmatoarele stari:
  
-Class NFA
+# Class NFA
 The class works in the same way as the DFA, with one difference:
 • Unlike the representation from the course, where ΔΔ represented a relation over K×Σ×K ×Σ× , in Stage 1, d will also be a function, (encoded through a dictionary), which will associate a pair (state, character_alphabet), a set of successor states (instead of a single state, as happens in a DFA).
 Other observations:
