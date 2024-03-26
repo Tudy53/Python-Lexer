@@ -9,23 +9,19 @@ class Lexer:
     def __init__(self, spec: list[tuple[str, str]]) -> None:
         nfas = []
         info = {}
-        
-        # print("ok3")
+      
 
         for token_name, regex in spec:
             # print(token_name, regex)
             nfa = parse_regex(regex).thompson()
             nfas.append(nfa)
 
-        # print("am ajuns")
+        
         maximum = len(nfas) - 1
-        # print(maximum)
-
-        # print("ok10")
+       
         for index in range(0, maximum):
             translations = {}
 
-            # print("ok6")
             startnum = max(list(nfas[index].K)) + 1
 
             rebuild = NFA(set(), set(), None, {}, set())
@@ -46,9 +42,7 @@ class Lexer:
                     rebuild.addTransition(translations[fromstate], translations[state], character)
 
             nfas[index + 1] = rebuild
-            # print("ok5")
-
-        # print("ok4")
+        
         index = 0
         nfa_index = 0
         for token_name, regex in spec:
@@ -78,11 +72,7 @@ class Lexer:
             final_nfa.d[(start_state, EPSILON)].add(nfa_smol.q0)
 
         self.nfa = final_nfa
-        # print(self.nfa)
-        # print(self.dfa)
         my_dfa = final_nfa.subset_construction()
-        # print(my_dfa)
-
         self.dfa = my_dfa
         self.info = info
    
@@ -157,7 +147,6 @@ class Lexer:
                 del self.dfa.d[(state, str_value)]
                 
                 
-        # print(self.dfa.d)
 
     def lex(self, word: str) -> list[tuple[str, str]] | None:
         matches = []
