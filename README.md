@@ -38,8 +38,14 @@ Although the simplest way to refer to a state is through an integer, in certain 
 1. In this class you will have to implement the accept function, a function that receives a word and running the DFA on that word will return True if the word is accepted, and False otherwise.
 2. The remap_states function is not mandatory to implement, since it is not called by the checker, but it is recommended since it will facilitate the implementation of the subset construction algorithm. It aims to transform the set of states, from one type (for example string) to another (for example, integer). Such transformations will be necessary, especially in the later stages of the project.
 For example, if we have the next automata:
+
+![image](https://github.com/Tudy53/Python-Lexer/assets/94364533/c1bc0d37-fbb7-4e09-b1f4-b05dd4365e58)
+
  
-Am putea aplica functia x → 'q' + str(x+2), care ar creea un DFA cu urmatoarele stari:
+We can aply the function a x → 'q' + str(x+2), which would create the next DFA:
+
+![image](https://github.com/Tudy53/Python-Lexer/assets/94364533/dadd5f3a-59cf-4149-9af6-947793007361)
+
  
 # Class NFA
 The class works in the same way as the DFA, with one difference:
@@ -49,9 +55,10 @@ Other observations:
 2. The subset_construction function will return a DFA, built from the current NFA through the subset construction algorithm. The returned DFA will have the state type frozenset[STATE] (states 0 and 1 from an NFA will end up with a set of states {0,1} from a DFA). We use frozenset instead of set, because the latter is not immutable (sets can be modified by side effects). We need an immutable object to be able to calculate a hash (always the same), and implicitly to be able to use such objects as keys in a dictionary (something impossible if the key object is mutable).
 3. The remap_states function which has the same format and purpose as the function from DFAs
 The epsilon_closure and subset_construction functions must be implemented, and the remap_states function is not.
-Stage 2
-Stage 2 of the project consists of Regex - NFA conversion (using the Thompson Algorithm presented in the course)
-Skeletal structure
+
+# Stage 2
+ Stage 2 of the project consists of Regex - NFA conversion (using the Thompson Algorithm presented in the course)
+# Skeletal structure
 In the skeleton of the theme you will find, besides the 2 classes from the previous stages (NFA and DFA), another class, Regex, and a parse_regex method.
 The standard form of regular expressions
 The standard form of regexes can be described in BNF form as follows:
@@ -66,7 +73,7 @@ The standard form of regexes can be described in BNF form as follows:
 In the above description, the elements between angle brackets <> are non-terminals to be generated, characters are always enclosed in single quotes, and strings are enclosed in double quotes.
 <character> refers to any regular character that is not a control character (such as * or |), or any string of length two of the form \c, where c can be any character including the control.
 "eps" represents the Epsilon character.
-Regex preprocessing
+# Regex preprocessing
 In the description above, in addition to the alpha-numeric characters and the basic operations star, concat and union, you will also find:
 1. two new operations:
 a. plus + - the expression to which it is applied appears 1 time or more.
@@ -76,17 +83,17 @@ a. [a-z] - any lower case character in the English alphabet
 b. [A-Z] - any uppercase character in the English alphabet
 c. [0-9] - any number
 If a regex contains white spaces, they are ignored. In order not to be ignored, they will be preceded by a backslash "\". Similarly, in order not to confuse the characters '*', '+', ')', '(', '|', '?' which also represent regex operators, when they are actually part of the regex, they will be preceded of backslashes.
-Regex class
+# Regex class
 In this class you will have to implement the thompson method, the method that receives a regex type object and returns an NFA (with int type states as a convention). The regex received as input will have the form presented above.
 The concatenation will not be represented by a specific character, we will consider that constructions of the form ab are automatically translated into "character a concatenated with character b". The concatenation thus stops at the meeting of a parenthesis or a union. E.g:
 1. ab|c is translated into (ab)|c
 2. abd* is translated into ab(d)*
 3. ab+ is translated into a(b)+
-Stage 3
+# Stage 3
 Stage 3 of the project consists of implementing a lexer in python.
 Skeletal structure
 In the framework of the theme you will find, besides the 3 classes from the previous stages (Regex, NFA and DFA), another class, Lexer.
-What is a Lexer
+# What is a Lexer
 A lexer is a program that divides a string of characters into substrings called lexemes, each of which is classified as a token, based on a specification.
 There are several ways you can implement a lexer. The conventional approach (and the one we recommend) consists of the following stages:
 1. each regex is converted into an AFN, keeping at the same time the information about the related token and the position at which it appears in the spec.
@@ -106,7 +113,8 @@ c. if there is no sink state in AFD, then the lexical analysis must continue unt
 Once the longest substring has been identified:
 1. The AFD will be reset - brought to the initial state to resume the lexical analysis.
 2. the lexical analysis will continue from the position where the longest substring has ended, and this can precede the current position where the analysis has reached by any number of positions.
-Lexer class
+
+# Lexer class
 The lexer class has a constructor that receives as a parameter a specification that has the following structure:
 spec = [(TOKEN_LEXEMA_1, regex1), (TOKEN_LEXEMA_2, regex2), ...]
 where the first element of each tuple is a name given to a token, and the second element of the tuple is a regex describing that token. You can think of this specification as a configuration file that describes how the lexer will work on various text files.
@@ -116,7 +124,7 @@ Let it be the next specification:
 spec = [("TOKEN1", "abbc*"), ("TOKEN2", "ab+"), ("TOKEN3", "a*d")]
 and the abbd input. The lexical analysis will stop at character d (the previously described AFD will reach this character in sink state). The substring abb is the longest that satisfies both TOKEN1 and TOKEN2, and TOKEN1 will be reported, since it precedes TOKEN2 in the specification. Afterwards, the lexer will advance by one character the current position in the input, and will identify the substring d as TOKEN3.
 For further clarifications and more examples that include the longest substring, revisit the course on lexers.
-Lexation errors
+# Lexation errors
 Lexation errors are generally caused by a wrong / incomplete configuration or an invalid word. The information that must be transmitted in this case must help the programmer to figure out where in a code the error occurred and what is the type of error. For this reason, we will display the line and column where the lexing failed and the type of error. The error is equivalent to reaching the SINK_STATE state of the lexer without first passing through a final state. In this case we will display an error message in the format
 
 No viable alternative at character ..., line ...
@@ -124,10 +132,10 @@ In the first free place we will put the index of the character where the lexing 
 If the lexer has reached the end of the word without first accepting a lexeme, and the lexer has not reached the sync state, but not in a final state either, we will display an error message in the format:
 No viable alternative at character EOF, line ...
 As a short summary: the first error occurs when the character we reached is invalid and we have no way to accept it, and the second occurs when the lexer would still accept it, but the word is incomplete and has nothing left.
-Testing
+# Testing
 Checking the correctness of your implementation will be done automatically, through a series of unit tests, tests that will check the behavior of each mandatory function to be implemented and will test its output on a variety of inputs.
 Another preliminary check that will be done on each DFA built will be one that verifies the integrity of the d.p.d.v. structural (the initial state and the final states are included in many states, it does not have defined transitions on a character from a certain state).
-Python
+# Python
 The python version we will use for this theme is python3.12. 
 To run the tests, use the python3.12 -m unittest command. This command will automatically detect the tests defined in the test folder and run them one by one, finally displaying the failed tests, if any.
 
